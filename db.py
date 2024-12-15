@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import ForeignKey, DateTime, func
+from sqlalchemy import ForeignKey, DateTime, func, false
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Optional
@@ -25,7 +25,7 @@ class StaffModel(Model):
     staff_phone: Mapped[str]
     staff_username: Mapped[str] = mapped_column(unique=True)
     staff_pass: Mapped[Optional[str]]
-    staff_hidden: Mapped[bool]
+    staff_hidden: Mapped[bool] = mapped_column(default=False)
 
     timesheets: Mapped[list["TimesheetModel"]] = relationship()
     reservations: Mapped[list["ReservationModel"]] = relationship()
@@ -56,7 +56,7 @@ class SupplierModel(Model):
     supplier_id: Mapped[int] = mapped_column(primary_key=True)
     supplier_name: Mapped[str]
     supplier_phone: Mapped[str]
-    supplier_hidden: Mapped[bool]
+    supplier_hidden: Mapped[bool] = mapped_column(default=False)
 
     deliveries: Mapped[list["DeliveryModel"]] = relationship()
 
@@ -92,7 +92,7 @@ class DishModel(Model):
     dish_name: Mapped[str]
     dish_cost: Mapped[float]
     dish_compos: Mapped[Optional[str]]
-    dish_hidden: Mapped[bool]
+    dish_hidden: Mapped[bool] = mapped_column(default=False)
 
     items: Mapped[list["ItemModel"]] = relationship()
 
@@ -101,7 +101,7 @@ class JobModel(Model):
     __tablename__ = "job"
 
     job_id: Mapped[int] = mapped_column(primary_key=True)
-    job_name: Mapped[str]
+    job_name: Mapped[str] = mapped_column(unique=True)
 
     staff: Mapped[list["StaffModel"]] = relationship()
 
@@ -147,7 +147,7 @@ class ClientModel(Model):
     client_name: Mapped[str]
     client_mid_name: Mapped[Optional[str]]
     client_phone: Mapped[str]
-    client_hidden: Mapped[bool]
+    client_hidden: Mapped[bool] = mapped_column(default=False)
 
     reservations: Mapped[list["ReservationModel"]] = relationship()
 
@@ -183,7 +183,7 @@ class AbsenceTypeModel(Model):
     __tablename__ = "absence_type"
 
     absence_type_id: Mapped[int] = mapped_column(primary_key=True)
-    absence_type_name: Mapped[str]
+    absence_type_name: Mapped[str] = mapped_column(unique=True)
 
     timesheet_records: Mapped[list["TimesheetModel"]] = relationship()
 
@@ -192,7 +192,7 @@ class DeliveryTypeModel(Model):
     __tablename__ = "delivery_type"
 
     delivery_type_id: Mapped[int] = mapped_column(primary_key=True)
-    delivery_type_name: Mapped[str]
+    delivery_type_name: Mapped[str] = mapped_column(unique=True)
 
     deliveries: Mapped[list["DeliveryModel"]] = relationship()
 

@@ -17,7 +17,7 @@ class GetStaff(BaseModel):
     staff_id: int
 
 
-class StaffDB:
+class StaffDB(BaseModel):
     staff_id: int
     job_id: int
     staff_sur: str
