@@ -2,6 +2,8 @@ from typing import Optional
 
 from pydantic import BaseModel
 
+from schemas.job import JobDB
+
 
 class CreateStaff(BaseModel):
     job_id: int
@@ -19,7 +21,6 @@ class GetStaff(BaseModel):
 
 class StaffDB(BaseModel):
     staff_id: int
-    job_id: int
     staff_sur: str
     staff_name: str
     staff_mid_name: Optional[str]
@@ -27,6 +28,7 @@ class StaffDB(BaseModel):
     staff_username: str
     staff_pass: Optional[str]
     staff_hidden: bool
+    job: JobDB
 
 
 class UpdateStaff(BaseModel):

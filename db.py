@@ -27,13 +27,14 @@ class StaffModel(Model):
     staff_pass: Mapped[Optional[str]]
     staff_hidden: Mapped[bool] = mapped_column(default=False)
 
-    timesheets: Mapped[list["TimesheetModel"]] = relationship()
-    reservations: Mapped[list["ReservationModel"]] = relationship()
-    job: Mapped["JobModel"] = relationship()
-    orders: Mapped[list["OrderModel"]] = relationship()
-    deliveries: Mapped[list["DeliveryModel"]] = relationship()
-    concerts: Mapped[list["ConcertModel"]] = relationship()
-    payouts: Mapped[list["PayoutModel"]] = relationship()
+    timesheets = relationship("TimesheetModel", back_populates="staff", uselist=True, lazy='subquery')
+    reservations = relationship("ReservationModel", back_populates="staff", uselist=True, lazy='subquery')
+    orders = relationship("OrderModel", back_populates="staff", uselist=True, lazy='subquery')
+    deliveries = relationship("DeliveryModel", back_populates="staff", uselist=True, lazy='subquery')
+    concerts = relationship("ConcertModel", back_populates="staff", uselist=True, lazy='subquery')
+    payouts = relationship("PayoutModel", back_populates="staff", uselist=True, lazy='subquery')
+
+    job = relationship("JobModel", back_populates="staffs", lazy='subquery')
 
 
 class DeliveryModel(Model):
@@ -45,9 +46,9 @@ class DeliveryModel(Model):
     delivery_type_id: Mapped[int] = mapped_column(ForeignKey("delivery_type.delivery_type_id", ondelete="RESTRICT"))
     delivery_date: Mapped[datetime.datetime]
 
-    staff: Mapped["StaffModel"] = relationship()
-    supplier: Mapped["SupplierModel"] = relationship()
-    delivery_type: Mapped["DeliveryTypeModel"] = relationship()
+    staff = relationship("StaffModel", back_populates="deliveries", lazy='subquery')
+    supplier = relationship("SupplierModel", back_populates="deliveries", lazy='subquery')
+    delivery_type = relationship("DeliveryTypeModel", back_populates="deliveries", lazy='subquery')
 
 
 class SupplierModel(Model):
@@ -58,7 +59,7 @@ class SupplierModel(Model):
     supplier_phone: Mapped[str]
     supplier_hidden: Mapped[bool] = mapped_column(default=False)
 
-    deliveries: Mapped[list["DeliveryModel"]] = relationship()
+    deliveries = relationship("DeliveryModel", back_populates="supplier", uselist=True, lazy='subquery')
 
 
 class OrderModel(Model):
@@ -68,8 +69,9 @@ class OrderModel(Model):
     staff_id: Mapped[int] = mapped_column(ForeignKey("staff.staff_id", ondelete="RESTRICT"))
     order_note: Mapped[Optional[str]]
 
-    staff: Mapped["StaffModel"] = relationship()
-    items: Mapped[list["ItemModel"]] = relationship()
+    items = relationship("ItemModel", back_populates="order", uselist=True, lazy='subquery')
+
+    staff = relationship("StaffModel", back_populates="orders", lazy='subquery')
 
 
 class ItemModel(Model):
@@ -81,8 +83,8 @@ class ItemModel(Model):
     item_cost: Mapped[float]
     item_amount: Mapped[int]
 
-    order: Mapped["OrderModel"] = relationship()
-    dish: Mapped["DishModel"] = relationship()
+    order = relationship("OrderModel", back_populates="items", lazy='subquery')
+    dish = relationship("DishModel", back_populates="items", lazy='subquery')
 
 
 class DishModel(Model):
@@ -94,7 +96,7 @@ class DishModel(Model):
     dish_compos: Mapped[Optional[str]]
     dish_hidden: Mapped[bool] = mapped_column(default=False)
 
-    items: Mapped[list["ItemModel"]] = relationship()
+    items = relationship("ItemModel", back_populates="dish", uselist=True, lazy='subquery')
 
 
 class JobModel(Model):
@@ -103,7 +105,7 @@ class JobModel(Model):
     job_id: Mapped[int] = mapped_column(primary_key=True)
     job_name: Mapped[str] = mapped_column(unique=True)
 
-    staff: Mapped[list["StaffModel"]] = relationship()
+    staffs = relationship("StaffModel", back_populates="job", uselist=True, lazy='subquery')
 
 
 class TableModel(Model):
@@ -113,7 +115,7 @@ class TableModel(Model):
     table_place: Mapped[str]
     table_persons: Mapped[int]
 
-    reservations: Mapped[list["ReservationModel"]] = relationship()
+    reservations = relationship("ReservationModel", back_populates="table", uselist=True, lazy='subquery')
 
 
 class ConcertModel(Model):
@@ -125,7 +127,7 @@ class ConcertModel(Model):
     concert_name: Mapped[str]
     concert_band: Mapped[str]
 
-    staff: Mapped["StaffModel"] = relationship()
+    staff = relationship("StaffModel", back_populates="concerts", lazy='subquery')
 
 
 class PayoutModel(Model):
@@ -136,7 +138,7 @@ class PayoutModel(Model):
     payout_amount: Mapped[float]
     payout_date: Mapped[datetime.datetime]
 
-    staff: Mapped["StaffModel"] = relationship()
+    staff = relationship("StaffModel", back_populates="payouts", lazy='subquery')
 
 
 class ClientModel(Model):
@@ -149,7 +151,7 @@ class ClientModel(Model):
     client_phone: Mapped[str]
     client_hidden: Mapped[bool] = mapped_column(default=False)
 
-    reservations: Mapped[list["ReservationModel"]] = relationship()
+    reservations = relationship("ReservationModel", back_populates="client", uselist=True, lazy='subquery')
 
 
 class ReservationModel(Model):
@@ -161,9 +163,9 @@ class ReservationModel(Model):
     staff_id: Mapped[int] = mapped_column(ForeignKey("staff.staff_id", ondelete="RESTRICT"))
     reservation_date: Mapped[datetime.datetime]
 
-    client: Mapped["ClientModel"] = relationship()
-    staff: Mapped["StaffModel"] = relationship()
-    table: Mapped["TableModel"] = relationship()
+    client = relationship("ClientModel", back_populates="reservations", lazy='subquery')
+    staff = relationship("StaffModel", back_populates="reservations", lazy='subquery')
+    table = relationship("TableModel", back_populates="reservations", lazy='subquery')
 
 
 class TimesheetModel(Model):
@@ -171,12 +173,12 @@ class TimesheetModel(Model):
 
     timesheet_id: Mapped[int] = mapped_column(primary_key=True)
     staff_id: Mapped[int] = mapped_column(ForeignKey("staff.staff_id", ondelete="RESTRICT"))
-    absence_id: Mapped[int] = mapped_column(ForeignKey("absence_type.absence_type_id", ondelete="RESTRICT"))
-    timesheet_record_date: Mapped[datetime.datetime]
+    absence_type_id: Mapped[int] = mapped_column(ForeignKey("absence_type.absence_type_id", ondelete="RESTRICT"))
+    timesheet_date: Mapped[datetime.datetime]
     timesheet_presence: Mapped[bool]
 
-    staff: Mapped["StaffModel"] = relationship()
-    absence: Mapped["AbsenceTypeModel"] = relationship()
+    staff = relationship("StaffModel", back_populates="timesheets", lazy='subquery')
+    absence_type = relationship("AbsenceTypeModel", back_populates="timesheets", lazy='subquery')
 
 
 class AbsenceTypeModel(Model):
@@ -185,7 +187,7 @@ class AbsenceTypeModel(Model):
     absence_type_id: Mapped[int] = mapped_column(primary_key=True)
     absence_type_name: Mapped[str] = mapped_column(unique=True)
 
-    timesheet_records: Mapped[list["TimesheetModel"]] = relationship()
+    timesheets = relationship("TimesheetModel", back_populates="absence_type", uselist=True, lazy='subquery')
 
 
 class DeliveryTypeModel(Model):
@@ -194,7 +196,7 @@ class DeliveryTypeModel(Model):
     delivery_type_id: Mapped[int] = mapped_column(primary_key=True)
     delivery_type_name: Mapped[str] = mapped_column(unique=True)
 
-    deliveries: Mapped[list["DeliveryModel"]] = relationship()
+    deliveries = relationship("DeliveryModel", back_populates="delivery_type", uselist=True, lazy='subquery')
 
 
 async def create_tables():

@@ -22,12 +22,12 @@ class DeliveryType:
                     "Не удалось добавить значение",
                 )
             await session.commit()
-            return DeliveryTypeDB(**field.__dict__)
+            return field
 
     @classmethod
     async def update_delivery_type(cls, request: Request, data: UpdateDeliveryType):
         async with new_session() as session:
-            query = select(DeliveryTypeModel).filter_by(id=data.delivery_type_id)
+            query = select(DeliveryTypeModel).filter_by(delivery_type_id=data.delivery_type_id)
             result = await session.execute(query)
             field = result.scalars().first()
             if field is None:
@@ -35,11 +35,11 @@ class DeliveryType:
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="User with this user id does not exist",
                 )
-            for key, value in data.items():
+            for key, value in data.model_dump().items():
                 setattr(field, key, value)
             await session.flush()
             await session.commit()
-            return DeliveryTypeDB(**field.__dict__)
+            return field
 
     @classmethod
     async def get_delivery_type(cls, request: Request, data:GetDeliveryType):
@@ -54,7 +54,7 @@ class DeliveryType:
                 )
             await session.flush()
             await session.commit()
-            return DeliveryTypeDB(**field.__dict__)
+            return field
 
     @classmethod
     async def get_delivery_types(cls, request: Request):

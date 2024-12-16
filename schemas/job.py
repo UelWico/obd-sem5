@@ -17,4 +17,3 @@ class GetJob(BaseModel):
 class UpdateJob(BaseModel):
     job_id: int
     job_name: str
-
