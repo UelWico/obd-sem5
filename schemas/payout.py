@@ -28,3 +28,7 @@ class UpdatePayout(BaseModel):
     payout_amount: float
     payout_date: datetime
 
+
+class DeletePayout(BaseModel):
+    payout_id: int
+

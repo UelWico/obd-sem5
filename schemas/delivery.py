@@ -36,3 +36,7 @@ class UpdateDelivery(BaseModel):
     delivery_type_id: int
     delivery_date: datetime
 
+
+class DeleteDelivery(BaseModel):
+    delivery_id: int
+

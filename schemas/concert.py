@@ -31,3 +31,7 @@ class UpdateConcert(BaseModel):
     concert_date: datetime
     concert_name: str
     concert_band: str
+
+
+class DeleteConcert(BaseModel):
+    concert_id: int
