@@ -14,6 +14,16 @@ class Model(DeclarativeBase):
     pass
 
 
+class SessionModel(Model):
+    __tablename__ = "session"
+
+    session_id: Mapped[int] = mapped_column(primary_key=True)
+    session_uuid: Mapped[str] = mapped_column(unique=True)
+    staff_id: Mapped[int] = mapped_column(ForeignKey("staff.staff_id", ondelete="RESTRICT"))
+
+    staff = relationship("StaffModel", back_populates='sessions', lazy='subquery')
+
+
 class StaffModel(Model):
     __tablename__ = "staff"
 
@@ -33,6 +43,7 @@ class StaffModel(Model):
     deliveries = relationship("DeliveryModel", back_populates="staff", uselist=True, lazy='subquery')
     concerts = relationship("ConcertModel", back_populates="staff", uselist=True, lazy='subquery')
     payouts = relationship("PayoutModel", back_populates="staff", uselist=True, lazy='subquery')
+    sessions = relationship("SessionModel", back_populates="staff", uselist=True, lazy='subquery')
 
     job = relationship("JobModel", back_populates="staffs", lazy='subquery')
 

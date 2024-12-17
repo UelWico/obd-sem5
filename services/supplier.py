@@ -1,32 +1,32 @@
-from schemas.staff import *
+from schemas.supplier import *
 from fastapi import HTTPException, status, Response, Request
 from fastapi.responses import JSONResponse
-from db import new_session, StaffModel
+from db import new_session, SupplierModel
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select, delete
 import jwt
 
 
-async def get_staff_by_id(staff_id):
+async def get_supplier_by_id(supplier_id):
     async with new_session() as session:
-        query = select(StaffModel).filter_by(staff_id=staff_id)
+        query = select(SupplierModel).filter_by(supplier_id=supplier_id)
         result = await session.execute(query)
         field = result.scalars().first()
         if field is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Такого сотрудника не существует",
+                detail="Такого поставщика не существует",
             )
         await session.flush()
         return field
 
 
-class Staff:
+class Supplier:
     @classmethod
-    async def create_staff(cls, request: Request, data: CreateStaff):
+    async def create_supplier(cls, request: Request, data: CreateSupplier):
         async with new_session() as session:
             data_dict = data.model_dump()
-            field = StaffModel(**data_dict)
+            field = SupplierModel(**data_dict)
             session.add(field)
             try:
                 await session.flush()
@@ -37,12 +37,12 @@ class Staff:
                 )
             await session.commit()
 
-        return await get_staff_by_id(field.staff_id)
+        return await get_supplier_by_id(field.supplier_id)
 
     @classmethod
-    async def update_staff(cls, request: Request, data: UpdateStaff):
+    async def update_supplier(cls, request: Request, data: UpdateSupplier):
         async with new_session() as session:
-            query = select(StaffModel).filter_by(staff_id=data.staff_id)
+            query = select(SupplierModel).filter_by(supplier_id=data.supplier_id)
             result = await session.execute(query)
             field = result.scalars().first()
             if field is None:
@@ -55,24 +55,24 @@ class Staff:
             await session.flush()
             await session.commit()
 
-        return await get_staff_by_id(data.staff_id)
+        return await get_supplier_by_id(data.supplier_id)
 
     @classmethod
-    async def get_staff(cls, request: Request, data: GetStaff):
-        return await get_staff_by_id(data.staff_id)
+    async def get_supplier(cls, request: Request, data: GetSupplier):
+        return await get_supplier_by_id(data.supplier_id)
 
     @classmethod
-    async def get_staffs(cls, request: Request):
+    async def get_suppliers(cls, request: Request):
         async with new_session() as session:
-            query = select(StaffModel)
+            query = select(SupplierModel)
             result = await session.execute(query)
             fields = result.scalars().all()
             return fields
 
     @classmethod
-    async def delete_staff(cls, request: Request, data: DeleteStaff):
+    async def delete_supplier(cls, request: Request, data: DeleteSupplier):
         async with new_session() as session:
-            query = select(StaffModel).filter_by(staff_id=data.staff_id)
+            query = select(SupplierModel).filter_by(supplier_id=data.supplier_id)
             result = await session.execute(query)
             field = result.scalars().first()
             if field is None:
@@ -80,7 +80,7 @@ class Staff:
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="User with this user id does not exist",
                 )
-            field.staff_hidden = not field.staff_hidden
+            field.supplier_hidden = not field.supplier_hidden
 
             await session.flush()
             await session.commit()

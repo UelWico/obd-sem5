@@ -13,6 +13,7 @@ def get_dish_by_dish_id(dishes, dish_id):
             return dishes[i]
     return None
 
+
 async def get_order_by_order_id(order_id):
     async with new_session() as session:
         query = select(OrderModel).filter_by(order_id=order_id)
@@ -25,7 +26,6 @@ async def get_order_by_order_id(order_id):
             )
         await session.flush()
         return field
-
 
 
 class Order:
@@ -96,10 +96,8 @@ class Order:
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="User with this user id does not exist",
                 )
-            field.order_cost = data.order.order_cost
-            field.person_id = data.order.person_id
-            field.is_user_purchase = data.order.is_user_purchase
-            field.place_id = data.order.place_id
+            field.staff_id = data.staff_id
+            field.order_note = data.order_note
             await session.flush()
             await session.commit()
 
@@ -139,21 +137,12 @@ class Order:
     async def delete_order(cls, request: Request, data: DeleteOrder):
         async with new_session() as session:
             query = delete(OrderModel).filter_by(order_id=data.order_id)
-            result = await session.execute(query)
-            field = result.scalars().first()
-            await session.flush()
-            await session.commit()
-
-        if result.rowcount == 0:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="No sufficient rights",
-            )
-
-        async with new_session() as session:
-            query = delete(ItemModel).filter_by(order_id=data.order_id)
             await session.execute(query)
-            await session.flush()
+            try:
+                await session.flush()
+            except IntegrityError:
+                raise HTTPException(
+                    status.HTTP_400_BAD_REQUEST,
+                    "Can't create: bad request",
+                )
             await session.commit()
-
-        return field
