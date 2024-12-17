@@ -33,5 +33,5 @@ class UpdateTimesheet(BaseModel):
     timesheet_presence: bool
 
 
-class DeleteTimesheet:
+class DeleteTimesheet(BaseModel):
     timesheet_id: int
