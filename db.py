@@ -102,7 +102,7 @@ class DishModel(Model):
     __tablename__ = "dish"
 
     dish_id: Mapped[int] = mapped_column(primary_key=True)
-    dish_name: Mapped[str]
+    dish_name: Mapped[str] = mapped_column(unique=True)
     dish_cost: Mapped[float]
     dish_compos: Mapped[Optional[str]]
     dish_hidden: Mapped[bool] = mapped_column(default=False)

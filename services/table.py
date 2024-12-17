@@ -1,27 +1,27 @@
 import functions
-from schemas.job import *
+from schemas.table import *
 from fastapi import HTTPException, status, Response, Request
 from fastapi.responses import JSONResponse
-from db import new_session, JobModel
+from db import new_session, TableModel
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select
 import jwt
 
 
-class Job:
+class Table:
     @classmethod
-    async def create_job(cls, request: Request, data: CreateJob):
+    async def create_table(cls, request: Request, data: CreateTable):
         staff = await functions.get_staff(request)
-        job_name = staff.job.job_name
+        table_name = staff.table.table_name
 
-        if job_name != "Администратор":
+        if table_name != "Администратор":
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED,
                 "У вас нет доступа к данной таблице"
             )
         async with new_session() as session:
             data_dict = data.model_dump()
-            field = JobModel(**data_dict)
+            field = TableModel(**data_dict)
             session.add(field)
             try:
                 await session.flush()
@@ -34,17 +34,17 @@ class Job:
             return field
 
     @classmethod
-    async def update_job(cls, request: Request, data: UpdateJob):
+    async def update_table(cls, request: Request, data: UpdateTable):
         staff = await functions.get_staff(request)
-        job_name = staff.job.job_name
+        table_name = staff.table.table_name
 
-        if job_name != "Администратор":
+        if table_name != "Администратор":
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED,
                 "У вас нет доступа к данной таблице"
             )
         async with new_session() as session:
-            query = select(JobModel).filter_by(job_id=data.job_id)
+            query = select(TableModel).filter_by(table_id=data.table_id)
             result = await session.execute(query)
             field = result.scalars().first()
             if field is None:
@@ -59,9 +59,9 @@ class Job:
             return field
 
     @classmethod
-    async def get_job(cls, request: Request, data:GetJob):
+    async def get_table(cls, request: Request, data:GetTable):
         async with new_session() as session:
-            query = select(JobModel).filter_by(job_id=data.job_id)
+            query = select(TableModel).filter_by(table_id=data.table_id)
             result = await session.execute(query)
             field = result.scalars().first()
             if field is None:
@@ -74,9 +74,9 @@ class Job:
             return field
 
     @classmethod
-    async def get_jobs(cls, request: Request):
+    async def get_tables(cls, request: Request):
         async with new_session() as session:
-            query = select(JobModel)
+            query = select(TableModel)
             result = await session.execute(query)
             fields = result.scalars().all()
             return fields

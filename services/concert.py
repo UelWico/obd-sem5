@@ -1,3 +1,4 @@
+import functions
 from schemas.concert import *
 from fastapi import HTTPException, status, Response, Request
 from fastapi.responses import JSONResponse
@@ -41,6 +42,14 @@ class Concert:
 
     @classmethod
     async def update_concert(cls, request: Request, data: UpdateConcert):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             query = select(ConcertModel).filter_by(concert_id=data.concert_id)
             result = await session.execute(query)
@@ -71,6 +80,14 @@ class Concert:
 
     @classmethod
     async def delete_concert(cls, request: Request, data: DeleteConcert):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             query = delete(ConcertModel).filter_by(concert_id=data.concert_id)
             await session.execute(query)

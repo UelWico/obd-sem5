@@ -1,3 +1,4 @@
+import functions
 from schemas.dish import *
 from fastapi import HTTPException, status, Response, Request
 from fastapi.responses import JSONResponse
@@ -10,6 +11,14 @@ import jwt
 class Dish:
     @classmethod
     async def create_dish(cls, request: Request, data: CreateDish):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             data_dict = data.model_dump()
             field = DishModel(**data_dict)
@@ -26,6 +35,14 @@ class Dish:
 
     @classmethod
     async def update_dish(cls, request: Request, data: UpdateDish):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             query = select(DishModel).filter_by(dish_id=data.dish_id)
             result = await session.execute(query)
@@ -42,7 +59,8 @@ class Dish:
             return field
 
     @classmethod
-    async def get_dish(cls, request: Request, data:GetDish):
+    async def get_dish(cls, request: Request, data: GetDish):
+
         async with new_session() as session:
             query = select(DishModel).filter_by(dish_id=data.dish_id)
             result = await session.execute(query)
@@ -66,6 +84,14 @@ class Dish:
 
     @classmethod
     async def delete_dish(cls, request: Request, data: DeleteDish):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             query = select(DishModel).filter_by(dish_id=data.dish_id)
             result = await session.execute(query)

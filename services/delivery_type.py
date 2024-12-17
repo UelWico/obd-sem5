@@ -1,3 +1,4 @@
+import functions
 from schemas.delivery_type import *
 from fastapi import HTTPException, status, Response, Request
 from fastapi.responses import JSONResponse
@@ -10,6 +11,14 @@ import jwt
 class DeliveryType:
     @classmethod
     async def create_delivery_type(cls, request: Request, data: CreateDeliveryType):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             data_dict = data.model_dump()
             field = DeliveryTypeModel(**data_dict)
@@ -26,6 +35,14 @@ class DeliveryType:
 
     @classmethod
     async def update_delivery_type(cls, request: Request, data: UpdateDeliveryType):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             query = select(DeliveryTypeModel).filter_by(delivery_type_id=data.delivery_type_id)
             result = await session.execute(query)

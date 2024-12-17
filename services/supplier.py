@@ -1,3 +1,4 @@
+import functions
 from schemas.supplier import *
 from fastapi import HTTPException, status, Response, Request
 from fastapi.responses import JSONResponse
@@ -24,6 +25,14 @@ async def get_supplier_by_id(supplier_id):
 class Supplier:
     @classmethod
     async def create_supplier(cls, request: Request, data: CreateSupplier):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             data_dict = data.model_dump()
             field = SupplierModel(**data_dict)
@@ -41,6 +50,14 @@ class Supplier:
 
     @classmethod
     async def update_supplier(cls, request: Request, data: UpdateSupplier):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             query = select(SupplierModel).filter_by(supplier_id=data.supplier_id)
             result = await session.execute(query)
@@ -71,6 +88,14 @@ class Supplier:
 
     @classmethod
     async def delete_supplier(cls, request: Request, data: DeleteSupplier):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             query = select(SupplierModel).filter_by(supplier_id=data.supplier_id)
             result = await session.execute(query)

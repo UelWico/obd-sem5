@@ -1,3 +1,4 @@
+import functions
 from schemas.staff import *
 from fastapi import HTTPException, status, Response, Request
 from fastapi.responses import JSONResponse
@@ -24,6 +25,14 @@ async def get_staff_by_id(staff_id):
 class Staff:
     @classmethod
     async def create_staff(cls, request: Request, data: CreateStaff):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             data_dict = data.model_dump()
             field = StaffModel(**data_dict)
@@ -41,6 +50,14 @@ class Staff:
 
     @classmethod
     async def update_staff(cls, request: Request, data: UpdateStaff):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             query = select(StaffModel).filter_by(staff_id=data.staff_id)
             result = await session.execute(query)
@@ -71,6 +88,14 @@ class Staff:
 
     @classmethod
     async def delete_staff(cls, request: Request, data: DeleteStaff):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             query = select(StaffModel).filter_by(staff_id=data.staff_id)
             result = await session.execute(query)

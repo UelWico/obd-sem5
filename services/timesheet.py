@@ -1,3 +1,4 @@
+import functions
 from schemas.timesheet import *
 from fastapi import HTTPException, status, Response, Request
 from fastapi.responses import JSONResponse
@@ -24,6 +25,14 @@ async def get_timesheet_by_id(timesheet_id):
 class Timesheet:
     @classmethod
     async def create_timesheet(cls, request: Request, data: CreateTimesheet):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             data_dict = data.model_dump()
             field = TimesheetModel(**data_dict)
@@ -41,6 +50,14 @@ class Timesheet:
 
     @classmethod
     async def update_timesheet(cls, request: Request, data: UpdateTimesheet):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             query = select(TimesheetModel).filter_by(timesheet_id=data.timesheet_id)
             result = await session.execute(query)
@@ -59,10 +76,26 @@ class Timesheet:
 
     @classmethod
     async def get_timesheet(cls, request: Request, data: GetTimesheet):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         return await get_timesheet_by_id(data.timesheet_id)
 
     @classmethod
     async def get_timesheets(cls, request: Request):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             query = select(TimesheetModel)
             result = await session.execute(query)
@@ -71,6 +104,14 @@ class Timesheet:
 
     @classmethod
     async def delete_timesheet(cls, request: Request, data: DeleteTimesheet):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             query = delete(TimesheetModel).filter_by(timesheet_id=data.timesheet_id)
             await session.execute(query)

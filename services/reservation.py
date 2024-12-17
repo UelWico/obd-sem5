@@ -1,3 +1,4 @@
+import functions
 from schemas.reservation import *
 from fastapi import HTTPException, status, Response, Request
 from fastapi.responses import JSONResponse
@@ -41,6 +42,14 @@ class Reservation:
 
     @classmethod
     async def update_reservation(cls, request: Request, data: UpdateReservation):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             query = select(ReservationModel).filter_by(reservation_id=data.reservation_id)
             result = await session.execute(query)
@@ -71,6 +80,14 @@ class Reservation:
 
     @classmethod
     async def delete_reservation(cls, request: Request, data: DeleteReservation):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             query = delete(ReservationModel).filter_by(reservation_id=data.reservation_id)
             await session.execute(query)

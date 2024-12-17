@@ -1,3 +1,4 @@
+import functions
 from schemas.order import *
 from fastapi import HTTPException, status, Response, Request
 from fastapi.responses import JSONResponse
@@ -87,6 +88,14 @@ class Order:
 
     @classmethod
     async def update_order(cls, request: Request, data: UpdateOrder):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             query = select(OrderModel).filter_by(order_id=data.order_id)
             result = await session.execute(query)
@@ -135,6 +144,14 @@ class Order:
 
     @classmethod
     async def delete_order(cls, request: Request, data: DeleteOrder):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             query = delete(OrderModel).filter_by(order_id=data.order_id)
             await session.execute(query)

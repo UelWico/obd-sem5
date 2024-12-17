@@ -1,3 +1,4 @@
+import functions
 from schemas.absence_type import *
 from fastapi import HTTPException, status, Response, Request
 from fastapi.responses import JSONResponse
@@ -10,6 +11,14 @@ import jwt
 class AbsenceType:
     @classmethod
     async def create_absence_type(cls, request: Request, data: CreateAbsenceType):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             data_dict = data.model_dump()
             field = AbsenceTypeModel(**data_dict)
@@ -26,6 +35,14 @@ class AbsenceType:
 
     @classmethod
     async def update_absence_type(cls, request: Request, data: UpdateAbsenceType):
+        staff = await functions.get_staff(request)
+        job_name = staff.job.job_name
+
+        if job_name != "Администратор":
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "У вас нет доступа к данной таблице"
+            )
         async with new_session() as session:
             query = select(AbsenceTypeModel).filter_by(absence_type_id=data.absence_type_id)
             result = await session.execute(query)

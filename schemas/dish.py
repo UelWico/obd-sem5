@@ -11,6 +11,7 @@ class CreateDish(BaseModel):
 
 class DishDB(BaseModel):
     dish_id: int
+    dish_name: str
     dish_cost: float
     dish_compos: Optional[str]
     dish_hidden: bool
@@ -22,6 +23,7 @@ class GetDish(BaseModel):
 
 class UpdateDish(BaseModel):
     dish_id: int
+    dish_name: str
     dish_cost: float
     dish_compos: Optional[str]
 
