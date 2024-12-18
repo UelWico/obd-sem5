@@ -1,0 +1,31 @@
+import { Outlet } from "react-router-dom";
+import Navigation from "../components/navigation";
+import { createContext, useState } from "react";
+import Cookies from "universal-cookie";
+
+const cookies = new Cookies();
+export const AuthContext = createContext({
+  authenticated: (() => {
+    return cookies.get("token") ? true : false;
+  })(),
+  // eslint-disable-next-line no-unused-vars
+  setAuthenticated: (auth) => {},
+});
+
+export default function Root() {
+  const [authenticated, setAuthenticated] = useState(
+    (() => {
+      return cookies.get("token") ? true : false;
+    })()
+  );
+  return (
+    <AuthContext.Provider value={{ authenticated, setAuthenticated }}>
+      <div className="root-container">
+        <Navigation></Navigation>
+        <div className="outlet-container">
+          <Outlet />
+        </div>
+      </div>
+    </AuthContext.Provider>
+  );
+}

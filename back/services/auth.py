@@ -46,7 +46,7 @@ class Auth:
             await session.commit()
 
         key = PRIVATE_KEY
-        response = JSONResponse("", 200)
+        response = JSONResponse({}, 200)
         response.set_cookie(
             key="token",
             value=jwt.encode(

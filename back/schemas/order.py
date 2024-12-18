@@ -3,6 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
+from schemas.dish import DishDB
 from schemas.staff import StaffDB
 
 
@@ -17,14 +18,10 @@ class ItemDB(BaseModel):
     item_cost: float
     item_amount: int
     order_id: int
-
-
-class GetItem(BaseModel):
-    item_id: int
+    dish: DishDB
 
 
 class CreateOrder(BaseModel):
-    staff_id: int
     order_note: Optional[str]
     items: list[CreateItem]
 
@@ -42,7 +39,6 @@ class GetOrder(BaseModel):
 
 class UpdateOrder(BaseModel):
     order_id: int
-    staff_id: int
     order_note: Optional[str]
     items: list[CreateItem]
 

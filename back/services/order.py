@@ -32,9 +32,11 @@ async def get_order_by_order_id(order_id):
 class Order:
     @classmethod
     async def create_order(cls, request: Request, data: CreateOrder):
+        staff = await functions.get_staff(request)
+
         async with new_session() as session:
             order_field = OrderModel(
-                staff_id=1,
+                staff_id=staff.staff_id,
                 order_note=data.order_note
             )
             session.add(order_field)
@@ -105,7 +107,6 @@ class Order:
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="User with this user id does not exist",
                 )
-            field.staff_id = data.staff_id
             field.order_note = data.order_note
             await session.flush()
             await session.commit()
@@ -162,4 +163,10 @@ class Order:
                     status.HTTP_400_BAD_REQUEST,
                     "Can't create: bad request",
                 )
+            await session.commit()
+
+        async with new_session() as session:
+            query = delete(ItemModel).filter_by(order_id=data.order_id)
+            await session.execute(query)
+            await session.flush()
             await session.commit()
