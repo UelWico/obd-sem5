@@ -39,34 +39,69 @@ function OrderFullItem({
     updateItem(itemChanged);
   };
   return (
-    <div className="order-full-item-container">
-      <select
-        name="dish_id"
-        placeholder="Dish"
-        value={item.dish_id}
-        onChange={(e) => setDishID(e.target.value)}
+    <div style={{ display: "flex", flexDirection: "row", width: "370px" }}>
+      <div
+        className="order-full-item-container"
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          border: "1px solid black",
+          borderRadius: 5,
+          width: "328px",
+          gap: "1px",
+          marginBottom: "6px",
+        }}
       >
-        {getDishes().map((dish_db) => (
-          <option
-            key={dish_db.dish_id}
-            value={dish_db.dish_id}
-            label={dish_db.dish_name}
-          ></option>
-        ))}
-      </select>
-      <input
-        name="item_amount"
-        placeholder="Item Amount"
-        type="number"
-        value={item.item_amount}
-        onChange={(e) => setItemAmount(e.target.value)}
-      />
+        <select
+          style={{
+            fontFamily: "system-ui",
+            fontSize: 16,
+            border: 0,
+            borderRight: "1px solid black",
+            outline: "none",
+            width: "278px",
+            backgroundColor: "transparent",
+          }}
+          name="dish_id"
+          placeholder="Dish"
+          value={item.dish_id}
+          onChange={(e) => setDishID(e.target.value)}
+        >
+          {getDishes().map((dish_db) => (
+            <option
+              key={dish_db.dish_id}
+              value={dish_db.dish_id}
+              label={dish_db.dish_name}
+            ></option>
+          ))}
+        </select>
+        <input
+          style={{
+            fontFamily: "system-ui",
+            fontSize: 16,
+            border: 0,
+            width: "58px",
+            outline: "none",
+            backgroundColor: "transparent",
+          }}
+          name="item_amount"
+          placeholder="Item Amount"
+          type="number"
+          value={item.item_amount}
+          onChange={(e) => setItemAmount(e.target.value)}
+        />
+      </div>
       <button
+        style={{
+          width: 36,
+          marginBottom: "6px",
+          marginLeft: "4px",
+        }}
         onClick={() => {
           deleteItem(item_id);
         }}
       >
-        Delete
+        ✖
       </button>
     </div>
   );

@@ -19,6 +19,12 @@ export default function Navigation() {
             <Link className="link-button" to={`profile`}>
               P
             </Link>
+            <Link className="link-button" to={`job`}>
+              J
+            </Link>
+            <Link className="link-button" to={`staff`}>
+              St
+            </Link>
           </>
         )}
       </nav>

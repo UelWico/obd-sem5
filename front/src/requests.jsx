@@ -181,3 +181,186 @@ export const GET_get_logged_user = async function () {
 
   return json;
 };
+
+/*
+  Job
+*/
+
+export const POST_get_jobs = async function () {
+  let response = await fetch(BACKEND_URL + "/job/get_jobs", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      accept: "application/json",
+    },
+    credentials: "include",
+  });
+  let json = await response.json();
+  let status = response.status;
+  if (status >= 400) throw new Error("Unsuccessful");
+
+  let out = [];
+  for (let i = 0; i < json.length; i++) {
+    out.push(objects.NewJobDB(json[i]));
+  }
+
+  return out;
+};
+
+export const POST_get_job = async function (obj) {
+  let body = objects.NewGetJob(obj);
+  let response = await fetch(BACKEND_URL + "/job/get_job", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      accept: "application/json",
+    },
+    body: JSON.stringify(body),
+    credentials: "include",
+  });
+  let json = await response.json();
+  let status = response.status;
+  if (status >= 400) throw new Error("Unsuccessful");
+  const out = objects.NewJobDB(json);
+
+  return out;
+};
+
+export const POST_create_job = async function (obj) {
+  let body = objects.NewCreateJob(obj);
+  let response = await fetch(BACKEND_URL + "/job/create_job", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      accept: "application/json",
+    },
+    body: JSON.stringify(body),
+    credentials: "include",
+  });
+  let json = await response.json();
+  let status = response.status;
+  if (status >= 400) throw new Error("Unsuccessful");
+  const out = objects.NewJobDB(json);
+
+  return out;
+};
+
+export const PUT_update_job = async function (obj) {
+  let body = objects.NewUpdateJob(obj);
+  let response = await fetch(BACKEND_URL + "/job/update_job", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      accept: "application/json",
+    },
+    body: JSON.stringify(body),
+    credentials: "include",
+  });
+  let json = await response.json();
+  let status = response.status;
+  if (status >= 400) throw new Error("Unsuccessful");
+  const out = objects.NewJobDB(json);
+
+  return out;
+};
+
+/*
+  Staff
+*/
+
+export const POST_get_staffs = async function () {
+  let response = await fetch(BACKEND_URL + "/staff/get_staffs", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      accept: "application/json",
+    },
+    credentials: "include",
+  });
+  let json = await response.json();
+  let status = response.status;
+  if (status >= 400) throw new Error("Unsuccessful");
+
+  let out = [];
+  for (let i = 0; i < json.length; i++) {
+    out.push(objects.NewStaffDB(json[i]));
+  }
+
+  return out;
+};
+
+export const POST_get_staff = async function (obj) {
+  let body = objects.NewGetStaff(obj);
+  let response = await fetch(BACKEND_URL + "/staff/get_staff", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      accept: "application/json",
+    },
+    body: JSON.stringify(body),
+    credentials: "include",
+  });
+  let json = await response.json();
+  let status = response.status;
+  if (status >= 400) throw new Error("Unsuccessful");
+  const out = objects.NewStaffDB(json);
+
+  return out;
+};
+
+export const POST_delete_staff = async function (obj) {
+  let body = objects.NewDeleteStaff(obj);
+  let response = await fetch(BACKEND_URL + "/staff/delete_staff", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      accept: "application/json",
+    },
+    body: JSON.stringify(body),
+    credentials: "include",
+  });
+  let json = await response.json();
+  let status = response.status;
+  if (status >= 400) throw new Error("Unsuccessful");
+  const out = objects.NewStaffDB(json);
+
+  return out;
+};
+
+export const POST_create_staff = async function (obj) {
+  let body = objects.NewCreateStaff(obj);
+  let response = await fetch(BACKEND_URL + "/staff/create_staff", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      accept: "application/json",
+    },
+    body: JSON.stringify(body),
+    credentials: "include",
+  });
+  let json = await response.json();
+  let status = response.status;
+  if (status >= 400) throw new Error("Unsuccessful");
+  const out = objects.NewStaffDB(json);
+
+  return out;
+};
+
+export const PUT_update_staff = async function (obj) {
+  let body = objects.NewUpdateStaff(obj);
+  let response = await fetch(BACKEND_URL + "/staff/update_staff", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      accept: "application/json",
+    },
+    body: JSON.stringify(body),
+    credentials: "include",
+  });
+  let json = await response.json();
+  let status = response.status;
+  if (status >= 400) throw new Error("Unsuccessful");
+  const out = objects.NewStaffDB(json);
+
+  return out;
+};

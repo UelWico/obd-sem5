@@ -10,36 +10,91 @@ function Order({
   deleteOrder,
 }) {
   return (
-    <div className="order-container">
-      <div className="order-row">
-        <p>{id}</p>
-        <p>{`Сотрудник: ${staffName}`}</p>
-      </div>
+    <div
+      style={{
+        width: "360px",
+        height: "min-content",
+        borderRadius: "10px",
+        marginTop: "8px",
+        marginBottom: "8px",
+      }}
+      className="order-container"
+    >
       <div className="order-column">
-        <div className="order-row">
-          <div
-            style={{ whiteSpace: "pre-wrap" }}
-          >{`Заказ:\n${orderItems}`}</div>
-        </div>
-        <div className="order-row">
-          <p>{`Сумма: ${orderCost}р`}</p>
-          <p>{`Note: ${orderNote}`}</p>
-        </div>
-        <div className="order-controls">
-          <button
-            onClick={() => {
-              editOrder();
+        <div className="order-headers">
+          <span
+            style={{
+              fontFamily: "system-ui",
+              fontSize: 28,
+              marginBottom: "44px",
             }}
           >
-            Edit
-          </button>
-          <button
-            onClick={() => {
-              deleteOrder(id);
-            }}
-          >
-            Delete
-          </button>
+            {`Заказ №${id}`}
+          </span>
+        </div>
+        <div className="order-column">
+          <div className="order-row">
+            <div className="order-column" style={{ width: "100%" }}>
+              {orderItems.map((order_item) => (
+                <div
+                  key={order_item.item_id}
+                  className="order-row"
+                  style={{
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontFamily: "system-ui",
+                      fontSize: 16,
+                      marginBottom: "16px",
+                      marginTop: 0,
+                    }}
+                  >
+                    {order_item.dish_name + " . . . . . . . ."}
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: "system-ui",
+                      fontSize: 16,
+                      marginBottom: "16px",
+                      marginTop: 0,
+                    }}
+                  >
+                    {order_item.item_amount +
+                      " x " +
+                      order_item.item_cost +
+                      " ₽"}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="order-column">
+            <p style={{ textAlign: "right" }}>{`Итого: ${orderCost} ₽`}</p>
+            <p>{`Комментарий: ${orderNote}`}</p>
+            <p
+              style={{ color: "gray" }}
+            >{`Добавлено сотрудником: ${staffName}`}</p>
+          </div>
+          <div className="order-headers" style={{ gap: "12px" }}>
+            <button
+              style={{ width: "182px" }}
+              onClick={() => {
+                editOrder();
+              }}
+            >
+              Редактировать
+            </button>
+            <button
+              style={{ width: "182px" }}
+              onClick={() => {
+                deleteOrder(id);
+              }}
+            >
+              Удалить
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -51,7 +106,7 @@ Order.propTypes = {
   staffName: PropTypes.string,
   orderCost: PropTypes.number,
   orderNote: PropTypes.string,
-  orderItems: PropTypes.string,
+  orderItems: PropTypes.object,
   editOrder: PropTypes.func,
   deleteOrder: PropTypes.func,
 };

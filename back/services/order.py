@@ -58,6 +58,7 @@ class Order:
         async with new_session() as session:
             for i in range(len(data.items)):
                 dish = get_dish_by_dish_id(dishes, data.items[i].dish_id)
+                print(data.items[i].dish_id)
                 field = ItemModel(
                     order_id=order_field.order_id,
                     dish_id=data.items[i].dish_id,

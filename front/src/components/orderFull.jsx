@@ -60,7 +60,7 @@ function OrderFull({ id, addOrder, editOrder }) {
       items.concat(
         NewItemDB({
           item_id: nextID,
-          dish_id: 0,
+          dish_id: getDishes()[0].dish_id,
           item_cost: 0,
           item_amount: 1,
         })
@@ -96,18 +96,28 @@ function OrderFull({ id, addOrder, editOrder }) {
     <div className="order-full-container">
       {order ? (
         <>
-          <div className="order-row">
-            {id <= 0 ? <h3>Add order</h3> : <h3>Edit order</h3>}
-          </div>
-          <div className="order-row">
-            <p>Order note:</p>
-            <input
-              name="orderNote"
-              type="text"
-              placeholder="Order Note"
-              value={orderNote}
-              onChange={(e) => setOrderNote(e.target.value)}
-            />
+          <div className="order-headers">
+            {id <= 0 ? (
+              <span
+                style={{
+                  fontFamily: "system-ui",
+                  fontSize: 28,
+                  marginBottom: "44px",
+                }}
+              >
+                Добавление заказа
+              </span>
+            ) : (
+              <span
+                style={{
+                  fontFamily: "system-ui",
+                  fontSize: 28,
+                  marginBottom: "44px",
+                }}
+              >
+                Изменение заказа
+              </span>
+            )}
           </div>
           <div className="order-column">
             {items
@@ -125,30 +135,71 @@ function OrderFull({ id, addOrder, editOrder }) {
               : "Loading..."}
             <div className="order-full-items-controls">
               <button
+                style={{
+                  width: 376,
+
+                  marginBottom: "60px",
+                }}
                 onClick={() => {
                   addItem();
                 }}
               >
-                Add item
+                Добавить продукт
               </button>
             </div>
           </div>
+          <div className="order-column">
+            <span
+              style={{
+                fontFamily: "system-ui",
+                fontSize: 16,
+                marginBottom: 16,
+              }}
+            >
+              Комментарий:
+            </span>
+
+            <textarea
+              style={{
+                fontFamily: "system-ui",
+                fontSize: 16,
+                borderRadius: "10px",
+                minHeight: "62px",
+                maxHeight: "80px",
+                minWidth: "364.4px",
+                maxWidth: "364.4px",
+                marginBottom: 16,
+              }}
+              name="orderNote"
+              type="text"
+              placeholder=""
+              value={orderNote}
+              onChange={(e) => setOrderNote(e.target.value)}
+            />
+          </div>
+
           <div className="order-controls">
             {order.order_id <= 0 ? (
               <button
+                style={{
+                  width: 376,
+                }}
                 onClick={() => {
                   addOrder(getOrderData());
                 }}
               >
-                Add Order
+                Оформить заказ
               </button>
             ) : (
               <button
+                style={{
+                  width: 376,
+                }}
                 onClick={() => {
                   editOrder(getOrderData());
                 }}
               >
-                Edit Order
+                Сохранить
               </button>
             )}
           </div>

@@ -70,42 +70,60 @@ export const Orders = function () {
 
   return (
     <>
-      <h3>Order table</h3>
-      <div className="order-table-controls">
-        <button
-          onClick={() => {
-            changeCurrentOrderID(0);
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <div
+          className="order-table-controls"
+          style={{
+            height: "min-content",
+            marginTop: "32px",
+            marginLeft: "52px",
           }}
         >
-          Return
-        </button>
-        <OrderFull
-          key={currentOrderID}
-          id={currentOrderID}
-          addOrder={addOrder}
-          editOrder={editOrder}
-        />
-      </div>
-      <div className="order-table">
-        {orders
-          ? orders
-              .slice()
-              .reverse()
-              .map((order) => (
-                <Order
-                  key={order.order_id}
-                  id={order.order_id}
-                  staffName={order.staff_name}
-                  orderCost={order.order_cost}
-                  orderNote={order.order_note}
-                  orderItems={order.order_items}
-                  editOrder={() => {
-                    changeCurrentOrderID(order.order_id);
-                  }}
-                  deleteOrder={deleteOrder}
-                />
-              ))
-          : "Loading..."}
+          <OrderFull
+            key={currentOrderID}
+            id={currentOrderID}
+            addOrder={addOrder}
+            editOrder={editOrder}
+          />
+          <button
+            onClick={() => {
+              changeCurrentOrderID(0);
+            }}
+            style={{
+              borderRadius: "100%",
+              width: "36px",
+              height: "36px",
+              fontSize: "22px",
+            }}
+          >
+            ↻
+          </button>
+        </div>
+
+        <div
+          className="order-table"
+          style={{ height: "100vh", overflow: "auto" }}
+        >
+          {orders
+            ? orders
+                .slice()
+                .reverse()
+                .map((order) => (
+                  <Order
+                    key={order.order_id}
+                    id={order.order_id}
+                    staffName={order.staff_name}
+                    orderCost={order.order_cost}
+                    orderNote={order.order_note}
+                    orderItems={order.order_items}
+                    editOrder={() => {
+                      changeCurrentOrderID(order.order_id);
+                    }}
+                    deleteOrder={deleteOrder}
+                  />
+                ))
+            : "Loading..."}
+        </div>
       </div>
     </>
   );
