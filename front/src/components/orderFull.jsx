@@ -137,7 +137,6 @@ function OrderFull({ id, addOrder, editOrder }) {
               <button
                 style={{
                   width: 376,
-
                   marginBottom: "60px",
                 }}
                 onClick={() => {

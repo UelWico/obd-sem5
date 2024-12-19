@@ -70,11 +70,19 @@ function Order({
               ))}
             </div>
           </div>
-          <div className="order-column">
-            <p style={{ textAlign: "right" }}>{`Итого: ${orderCost} ₽`}</p>
-            <p>{`Комментарий: ${orderNote}`}</p>
+          <div
+            style={{ whiteSpace: "normal", wordBreak: "break-all" }}
+            className="order-column"
+          >
             <p
-              style={{ color: "gray" }}
+              style={{
+                textAlign: "right",
+                marginBottom: 16,
+              }}
+            >{`Итого: ${orderCost} ₽`}</p>
+            <p style={{ marginBottom: 16 }}>{`Комментарий: ${orderNote}`}</p>
+            <p
+              style={{ color: "gray", marginBottom: 16 }}
             >{`Добавлено сотрудником: ${staffName}`}</p>
           </div>
           <div className="order-headers" style={{ gap: "12px" }}>

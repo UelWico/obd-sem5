@@ -49,7 +49,7 @@ function OrderFullItem({
           borderRadius: 5,
           width: "328px",
           gap: "1px",
-          marginBottom: "6px",
+          marginBottom: "8px",
         }}
       >
         <select

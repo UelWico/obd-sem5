@@ -9,12 +9,25 @@ export default function TableInput({
 }) {
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      <label>{label}</label>
+      <label
+        style={{
+          fontFamily: "system-ui",
+          fontSize: 16,
+          marginBottom: 6,
+          fontWeight: 400,
+        }}
+      >
+        {label}
+      </label>
       <input
         style={{
           fontFamily: "system-ui",
           fontSize: 16,
           borderRadius: "10px",
+          marginBottom: 12,
+          width: "100%",
+          marginRight: 0,
+          paddingRight: 0,
         }}
         type={type}
         value={item[name]}

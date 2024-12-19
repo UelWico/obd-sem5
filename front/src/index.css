@@ -131,6 +131,38 @@ body {
 
 p {
   font-family: system-ui;
+  margin: 0 0 0 0;
+}
+
+h2 {
+  font-family: system-ui;
+}
+
+h3 {
+  font-family: system-ui;
+}
+
+span {
+  font-family: system-ui;
+}
+
+table {
+  font-family: system-ui;
+  /* border: 1px solid black;
+  border-radius: 10px; */
+  border-collapse: collapse;
+}
+
+td,
+th {
+  font-family: system-ui;
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 1;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
 }
 
 button {

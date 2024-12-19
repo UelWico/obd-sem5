@@ -4,9 +4,11 @@ import * as requests from "../requests";
 import * as objects from "../objects";
 import TableInput from "../components/table_input";
 
-const table_name = "Должности";
-const create_button_text = "Создать должность";
+const table_name = "Сотрудники";
+const create_button_text = "Добавить сотрудника";
+const create_title_text = "Добавление сотрудника";
 const update_button_text = "Cохранить";
+const update_title_text = "Изменение сотрудника";
 const attribute_name_item_id = "staff_id";
 
 const headers = [
@@ -149,8 +151,22 @@ export default function Staff() {
 
   return (
     <>
-      <div>
-        <div>
+      <div className="order-row">
+        <div
+          style={{ marginTop: "32px", marginLeft: 18 }}
+          className="order-full-container"
+        >
+          <div className="order-headers">
+            <span
+              style={{
+                fontFamily: "system-ui",
+                fontSize: 28,
+                marginBottom: "44px",
+              }}
+            >
+              {form.is_create ? create_title_text : update_title_text}
+            </span>
+          </div>
           <TableInput
             type="text"
             item={form.new_item}
@@ -193,15 +209,17 @@ export default function Staff() {
             name="staff_pass"
             label={"Пароль"}
           />
+          <p style={{ marginBottom: 6 }}>Должность</p>
           <select
             style={{
               fontFamily: "system-ui",
               fontSize: 16,
-              border: 0,
-              borderRight: "1px solid black",
-              outline: "none",
-              width: "278px",
+              borderRadius: 10,
+              //   outline: "none",
+              width: "376px",
+              height: 30,
               backgroundColor: "transparent",
+              marginBottom: 12,
             }}
             name="job_id"
             placeholder="Job"
@@ -218,34 +236,33 @@ export default function Staff() {
                 ))
               : "Загрузка..."}
           </select>
-          {form.is_create ? (
-            <button
-              style={{
-                width: 376,
-              }}
-              onClick={get_create_func()}
-            >
-              {create_button_text}
-            </button>
-          ) : (
-            <>
-              <button
-                style={{
-                  width: 376,
-                }}
-                onClick={get_update_func()}
-              >
-                {update_button_text}
-              </button>
-              <button onClick={clear_form}>R</button>
-            </>
-          )}
+          <button
+            style={{
+              width: 376,
+            }}
+            onClick={form.is_create ? get_create_func() : get_update_func()}
+          >
+            {form.is_create ? create_button_text : update_button_text}
+          </button>
+          {!form.is_create && <button onClick={clear_form}>R</button>}
         </div>
         <div
-          style={{ width: "100%", display: "flex", flexDirection: "column" }}
+          style={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginTop: "20px",
+          }}
         >
-          <h2 id="tableTitle">{table_name + ":"}</h2>
-          <table>
+          <p
+            id="tableTitle"
+            className="order-headers"
+            style={{ fontSize: "28px", marginBottom: "16px" }}
+          >
+            {table_name}
+          </p>
+          <table width="96%">
             <thead>
               <tr id="tableHead">
                 {headers
