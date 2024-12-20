@@ -25,8 +25,10 @@ async def get_delivery_by_id(delivery_id):
 class Delivery:
     @classmethod
     async def create_delivery(cls, request: Request, data: CreateDelivery):
+        staff = await functions.get_staff(request)
         async with new_session() as session:
             data_dict = data.model_dump()
+            data_dict["staff_id"] = staff.staff_id
             field = DeliveryModel(**data_dict)
             session.add(field)
             try:

@@ -12,9 +12,9 @@ class Table:
     @classmethod
     async def create_table(cls, request: Request, data: CreateTable):
         staff = await functions.get_staff(request)
-        table_name = staff.table.table_name
+        job_name = staff.job.job_name
 
-        if table_name != "Администратор":
+        if job_name != "Администратор":
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED,
                 "У вас нет доступа к данной таблице"
@@ -36,9 +36,9 @@ class Table:
     @classmethod
     async def update_table(cls, request: Request, data: UpdateTable):
         staff = await functions.get_staff(request)
-        table_name = staff.table.table_name
+        job_name = staff.job.job_name
 
-        if table_name != "Администратор":
+        if job_name != "Администратор":
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED,
                 "У вас нет доступа к данной таблице"

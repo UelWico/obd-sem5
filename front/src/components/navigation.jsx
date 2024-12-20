@@ -25,6 +25,36 @@ export default function Navigation() {
             <Link className="link-button" to={`staff`}>
               St
             </Link>
+            <Link className="link-button" to={`absence_type`}>
+              AT
+            </Link>
+            <Link className="link-button" to={`delivery_type`}>
+              DT
+            </Link>
+            <Link className="link-button" to={`table`}>
+              T
+            </Link>
+            <Link className="link-button" to={`supplier`}>
+              Sup
+            </Link>
+            <Link className="link-button" to={`client`}>
+              C
+            </Link>
+            <Link className="link-button" to={`concert`}>
+              Con
+            </Link>
+            <Link className="link-button" to={`delivery`}>
+              D
+            </Link>
+            <Link className="link-button" to={`payout`}>
+              Pay
+            </Link>
+            <Link className="link-button" to={`timesheet`}>
+              TS
+            </Link>
+            <Link className="link-button" to={`reservation`}>
+              Res
+            </Link>
           </>
         )}
       </nav>

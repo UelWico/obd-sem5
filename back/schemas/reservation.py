@@ -9,7 +9,6 @@ from schemas.staff import StaffDB
 class CreateReservation(BaseModel):
     table_id: int
     client_id: int
-    staff_id: int
     reservation_date: datetime
 
 
@@ -30,7 +29,6 @@ class UpdateReservation(BaseModel):
     reservation_id: int
     table_id: int
     client_id: int
-    staff_id: int
     reservation_date: datetime
 
 

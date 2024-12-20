@@ -4,16 +4,16 @@ import * as requests from "../requests";
 import * as objects from "../objects";
 import TableInput from "../components/table_input";
 
-const table_name = "Должности";
-const create_button_text = "Добавить должность";
-const create_title_text = "Добавление должности";
+const table_name = "Типы поставки";
+const create_button_text = "Добавить тип поставки";
+const create_title_text = "Добавление типа поставки";
 const update_button_text = "Cохранить";
-const update_title_text = "Изменение должности";
-const attribute_name_item_id = "job_id";
+const update_title_text = "Изменение типа поставки";
+const attribute_name_item_id = "delivery_type_id";
 
 const headers = [
   {
-    header_name: "Название должности",
+    header_name: "Название типа поставки",
     header_width: "150px",
   },
 ];
@@ -24,21 +24,21 @@ const action_header = {
 };
 const action_state = 0;
 
-const get_items_func = requests.POST_get_jobs;
-const get_item_func = requests.POST_get_job;
-const create_item_func = requests.POST_create_job;
-const update_item_func = requests.PUT_update_job;
+const get_items_func = requests.POST_get_delivery_types;
+const get_item_func = requests.POST_get_delivery_type;
+const create_item_func = requests.POST_create_delivery_type;
+const update_item_func = requests.PUT_update_delivery_type;
 
 const new_create_form = function () {
   return {
-    new_item: objects.NewCreateJob({
-      job_name: "",
+    new_item: objects.NewCreateDeliveryType({
+      delivery_type_name: "",
     }),
     is_create: true,
   };
 };
 
-export default function Job() {
+export default function DeliveryType() {
   const [form, set_form] = useState(new_create_form());
   const clear_form = function () {
     set_form(new_create_form());
@@ -76,7 +76,7 @@ export default function Job() {
     return function () {
       get_item_func(obj).then((out) => {
         set_form({
-          new_item: objects.NewUpdateJob(out),
+          new_item: objects.NewUpdateDeliveryType(out),
           is_create: false,
         });
       });
@@ -120,7 +120,7 @@ export default function Job() {
             type="text"
             item={form.new_item}
             set_form_attribute_func={set_form_attribute}
-            name="job_name"
+            name="delivery_type_name"
             label={"Название"}
           />
           <button
@@ -186,23 +186,14 @@ export default function Job() {
                     .slice()
                     .reverse()
                     .map((item) => (
-                      <tr
-                        key={item[attribute_name_item_id]}
-                        style={(() => {
-                          if (item.staff_hidden) {
-                            return { color: "rgba(0,0,0,0.4)" };
-                          }
-                          return {};
-                        })()}
-                      >
-                        <td>{item.job_name}</td>
+                      <tr key={item[attribute_name_item_id]}>
+                        <td>{item.delivery_type_name}</td>
                         <td>
                           <ActionButtons
                             editFunc={get_edit_func({
-                              staff_id: item[attribute_name_item_id], ////
+                              delivery_type_id: item[attribute_name_item_id], ////
                             })}
                             state={action_state}
-                            hidden={item.staff_hidden}
                           ></ActionButtons>
                         </td>
                       </tr>

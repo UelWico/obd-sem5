@@ -9,6 +9,16 @@ import { Orders } from "./routes/orders";
 import Profile from "./routes/profile";
 import Job from "./routes/job";
 import Staff from "./routes/staff";
+import AbsenceType from "./routes/absence_type";
+import DeliveryType from "./routes/delivery_type";
+import Table from "./routes/table";
+import Supplier from "./routes/supplier";
+import Client from "./routes/client";
+import Concert from "./routes/concert";
+import Delivery from "./routes/delivery";
+import Payout from "./routes/payout";
+import Timesheet from "./routes/timesheet";
+import Reservation from "./routes/reservation";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +45,46 @@ const router = createBrowserRouter([
       {
         path: "staff",
         element: <Staff />,
+      },
+      {
+        path: "absence_type",
+        element: <AbsenceType />,
+      },
+      {
+        path: "delivery_type",
+        element: <DeliveryType />,
+      },
+      {
+        path: "table",
+        element: <Table />,
+      },
+      {
+        path: "supplier",
+        element: <Supplier />,
+      },
+      {
+        path: "client",
+        element: <Client />,
+      },
+      {
+        path: "concert",
+        element: <Concert />,
+      },
+      {
+        path: "delivery",
+        element: <Delivery />,
+      },
+      {
+        path: "payout",
+        element: <Payout />,
+      },
+      {
+        path: "timesheet",
+        element: <Timesheet />,
+      },
+      {
+        path: "reservation",
+        element: <Reservation />,
       },
     ],
   },

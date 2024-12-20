@@ -4,16 +4,24 @@ import * as requests from "../requests";
 import * as objects from "../objects";
 import TableInput from "../components/table_input";
 
-const table_name = "Должности";
-const create_button_text = "Добавить должность";
-const create_title_text = "Добавление должности";
+const table_name = "Столы";
+const create_button_text = "Добавить стол";
+const create_title_text = "Добавление стола";
 const update_button_text = "Cохранить";
-const update_title_text = "Изменение должности";
-const attribute_name_item_id = "job_id";
+const update_title_text = "Изменение стола";
+const attribute_name_item_id = "table_id";
 
 const headers = [
   {
-    header_name: "Название должности",
+    header_name: "Номер стола",
+    header_width: "150px",
+  },
+  {
+    header_name: "Расположение стола",
+    header_width: "150px",
+  },
+  {
+    header_name: "Количество персон",
     header_width: "150px",
   },
 ];
@@ -24,21 +32,22 @@ const action_header = {
 };
 const action_state = 0;
 
-const get_items_func = requests.POST_get_jobs;
-const get_item_func = requests.POST_get_job;
-const create_item_func = requests.POST_create_job;
-const update_item_func = requests.PUT_update_job;
+const get_items_func = requests.POST_get_tables;
+const get_item_func = requests.POST_get_table;
+const create_item_func = requests.POST_create_table;
+const update_item_func = requests.PUT_update_table;
 
 const new_create_form = function () {
   return {
-    new_item: objects.NewCreateJob({
-      job_name: "",
+    new_item: objects.NewCreateTable({
+      table_place: "",
+      table_persons: "",
     }),
     is_create: true,
   };
 };
 
-export default function Job() {
+export default function Table() {
   const [form, set_form] = useState(new_create_form());
   const clear_form = function () {
     set_form(new_create_form());
@@ -49,7 +58,6 @@ export default function Job() {
     set_form(new_form);
   };
   const [items, set_items] = useState([]);
-
   const set_item = function (obj) {
     let new_items = items.slice();
     for (let i = 0; i < new_items.length; i++) {
@@ -71,12 +79,11 @@ export default function Job() {
       set_items(items);
     });
   }, []);
-
   const get_edit_func = function (obj) {
     return function () {
       get_item_func(obj).then((out) => {
         set_form({
-          new_item: objects.NewUpdateJob(out),
+          new_item: objects.NewUpdateTable(out),
           is_create: false,
         });
       });
@@ -120,8 +127,15 @@ export default function Job() {
             type="text"
             item={form.new_item}
             set_form_attribute_func={set_form_attribute}
-            name="job_name"
-            label={"Название"}
+            name="table_place"
+            label={"Расположение"}
+          />
+          <TableInput
+            type="text"
+            item={form.new_item}
+            set_form_attribute_func={set_form_attribute}
+            name="table_persons"
+            label={"Количество персон"}
           />
           <button
             style={{
@@ -186,23 +200,16 @@ export default function Job() {
                     .slice()
                     .reverse()
                     .map((item) => (
-                      <tr
-                        key={item[attribute_name_item_id]}
-                        style={(() => {
-                          if (item.staff_hidden) {
-                            return { color: "rgba(0,0,0,0.4)" };
-                          }
-                          return {};
-                        })()}
-                      >
-                        <td>{item.job_name}</td>
+                      <tr key={item[attribute_name_item_id]}>
+                        <td>{item.table_id}</td>
+                        <td>{item.table_place}</td>
+                        <td>{item.table_persons}</td>
                         <td>
                           <ActionButtons
                             editFunc={get_edit_func({
-                              staff_id: item[attribute_name_item_id], ////
+                              table_id: item[attribute_name_item_id], ////
                             })}
                             state={action_state}
-                            hidden={item.staff_hidden}
                           ></ActionButtons>
                         </td>
                       </tr>

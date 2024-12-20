@@ -4,16 +4,29 @@ import * as requests from "../requests";
 import * as objects from "../objects";
 import TableInput from "../components/table_input";
 
-const table_name = "Должности";
-const create_button_text = "Добавить должность";
-const create_title_text = "Добавление должности";
+const table_name = "Концерты";
+const create_button_text = "Добавить концерт";
+const create_title_text = "Добавление концерта";
 const update_button_text = "Cохранить";
-const update_title_text = "Изменение должности";
-const attribute_name_item_id = "job_id";
+const update_title_text = "Изменение концерта";
+const attribute_name_item_id = "concert_id";
 
 const headers = [
   {
-    header_name: "Название должности",
+    header_name: "Добавлено сотрудником",
+    header_width: "150px",
+  },
+
+  {
+    header_name: "Название",
+    header_width: "150px",
+  },
+  {
+    header_name: "Дата концерта",
+    header_width: "150px",
+  },
+  {
+    header_name: "Выступающая группа",
     header_width: "150px",
   },
 ];
@@ -22,23 +35,26 @@ const action_header = {
   header_name: "Действия",
   header_width: "100px",
 };
-const action_state = 0;
+const action_state = 1;
 
-const get_items_func = requests.POST_get_jobs;
-const get_item_func = requests.POST_get_job;
-const create_item_func = requests.POST_create_job;
-const update_item_func = requests.PUT_update_job;
+const get_items_func = requests.POST_get_concerts;
+const get_item_func = requests.POST_get_concert;
+const create_item_func = requests.POST_create_concert;
+const update_item_func = requests.PUT_update_concert;
+const delete_item_func = requests.POST_delete_concert;
 
 const new_create_form = function () {
   return {
-    new_item: objects.NewCreateJob({
-      job_name: "",
+    new_item: objects.NewCreateConcert({
+      concert_date: "",
+      concert_name: "",
+      concert_band: "",
     }),
     is_create: true,
   };
 };
 
-export default function Job() {
+export default function Concert() {
   const [form, set_form] = useState(new_create_form());
   const clear_form = function () {
     set_form(new_create_form());
@@ -49,7 +65,16 @@ export default function Job() {
     set_form(new_form);
   };
   const [items, set_items] = useState([]);
-
+  const delete_item = function (item_id) {
+    let new_items = items.slice();
+    for (let i = 0; i < new_items.length; i++) {
+      if (new_items[i][attribute_name_item_id] == item_id) {
+        new_items.splice(i, 1);
+        break;
+      }
+    }
+    set_items(new_items);
+  };
   const set_item = function (obj) {
     let new_items = items.slice();
     for (let i = 0; i < new_items.length; i++) {
@@ -72,11 +97,22 @@ export default function Job() {
     });
   }, []);
 
+  const get_del_func = function (obj) {
+    return function () {
+      delete_item_func(obj).then((out) => {
+        if (action_state >= 2) {
+          set_item(out);
+        } else {
+          delete_item(obj[attribute_name_item_id]);
+        }
+      });
+    };
+  };
   const get_edit_func = function (obj) {
     return function () {
       get_item_func(obj).then((out) => {
         set_form({
-          new_item: objects.NewUpdateJob(out),
+          new_item: objects.NewUpdateConcert(out),
           is_create: false,
         });
       });
@@ -120,8 +156,22 @@ export default function Job() {
             type="text"
             item={form.new_item}
             set_form_attribute_func={set_form_attribute}
-            name="job_name"
-            label={"Название"}
+            name="concert_name"
+            label={"Название концерта"}
+          />
+          <TableInput
+            type="datetime-local"
+            item={form.new_item}
+            set_form_attribute_func={set_form_attribute}
+            name="concert_date"
+            label={"Дата концерта"}
+          />
+          <TableInput
+            type="text"
+            item={form.new_item}
+            set_form_attribute_func={set_form_attribute}
+            name="concert_band"
+            label={"Выступающая группа"}
           />
           <button
             style={{
@@ -186,23 +236,31 @@ export default function Job() {
                     .slice()
                     .reverse()
                     .map((item) => (
-                      <tr
-                        key={item[attribute_name_item_id]}
-                        style={(() => {
-                          if (item.staff_hidden) {
-                            return { color: "rgba(0,0,0,0.4)" };
-                          }
-                          return {};
-                        })()}
-                      >
-                        <td>{item.job_name}</td>
+                      <tr key={item[attribute_name_item_id]}>
+                        <td>
+                          {item.staff.staff_sur +
+                            " " +
+                            item.staff.staff_name +
+                            " " +
+                            item.staff.staff_mid_name}
+                        </td>
+                        <td>{item.concert_name}</td>
+                        <td>
+                          {new Date(
+                            item.concert_date.getTime() -
+                              new Date().getTimezoneOffset() * 60 * 1000
+                          ).toLocaleString("ru-RU")}
+                        </td>
+                        <td>{item.concert_band}</td>
                         <td>
                           <ActionButtons
+                            delFunc={get_del_func({
+                              concert_id: item[attribute_name_item_id], ////
+                            })}
                             editFunc={get_edit_func({
-                              staff_id: item[attribute_name_item_id], ////
+                              concert_id: item[attribute_name_item_id], ////
                             })}
                             state={action_state}
-                            hidden={item.staff_hidden}
                           ></ActionButtons>
                         </td>
                       </tr>

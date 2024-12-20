@@ -25,8 +25,11 @@ async def get_concert_by_id(concert_id):
 class Concert:
     @classmethod
     async def create_concert(cls, request: Request, data: CreateConcert):
+        staff = await functions.get_staff(request)
+
         async with new_session() as session:
             data_dict = data.model_dump()
+            data_dict["staff_id"] = staff.staff_id
             field = ConcertModel(**data_dict)
             session.add(field)
             try:

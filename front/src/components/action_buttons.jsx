@@ -13,7 +13,7 @@ export default function ActionButtons({ editFunc, delFunc, state, hidden }) {
       )}
       {state == 1 && (
         <button style={{ width: 36, height: 36 }} onClick={delFunc}>
-          Удалить
+          <img src="/del.svg" />
         </button>
       )}
       {state == 2 && !hidden && (

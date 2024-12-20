@@ -25,8 +25,10 @@ async def get_reservation_by_id(reservation_id):
 class Reservation:
     @classmethod
     async def create_reservation(cls, request: Request, data: CreateReservation):
+        staff = await functions.get_staff(request)
         async with new_session() as session:
             data_dict = data.model_dump()
+            data_dict["staff_id"] = staff.staff_id
             field = ReservationModel(**data_dict)
             session.add(field)
             try:

@@ -4,16 +4,24 @@ import * as requests from "../requests";
 import * as objects from "../objects";
 import TableInput from "../components/table_input";
 
-const table_name = "Должности";
-const create_button_text = "Добавить должность";
-const create_title_text = "Добавление должности";
+const table_name = "Выплаты";
+const create_button_text = "Оформить выплату";
+const create_title_text = "Добавление выплаты";
 const update_button_text = "Cохранить";
-const update_title_text = "Изменение должности";
-const attribute_name_item_id = "job_id";
+const update_title_text = "Изменение выплаты";
+const attribute_name_item_id = "payout_id";
 
 const headers = [
   {
-    header_name: "Название должности",
+    header_name: "Сотрудник",
+    header_width: "150px",
+  },
+  {
+    header_name: "Сумма выплаты",
+    header_width: "150px",
+  },
+  {
+    header_name: "Дата выплаты",
     header_width: "150px",
   },
 ];
@@ -22,23 +30,32 @@ const action_header = {
   header_name: "Действия",
   header_width: "100px",
 };
-const action_state = 0;
+const action_state = 1;
 
-const get_items_func = requests.POST_get_jobs;
-const get_item_func = requests.POST_get_job;
-const create_item_func = requests.POST_create_job;
-const update_item_func = requests.PUT_update_job;
+const get_items_func = requests.POST_get_payouts;
+const get_item_func = requests.POST_get_payout;
+const create_item_func = requests.POST_create_payout;
+const update_item_func = requests.PUT_update_payout;
+const delete_item_func = requests.POST_delete_payout;
 
 const new_create_form = function () {
   return {
-    new_item: objects.NewCreateJob({
-      job_name: "",
+    new_item: objects.NewCreatePayout({
+      staff_id: 1,
+      payout_amount: 0,
+      payout_date: "",
     }),
     is_create: true,
   };
 };
 
-export default function Job() {
+export default function Payout() {
+  const [staffs, set_staffs] = useState([]);
+  useEffect(() => {
+    requests.POST_get_staffs().then((staff_list) => {
+      set_staffs(staff_list);
+    });
+  }, []);
   const [form, set_form] = useState(new_create_form());
   const clear_form = function () {
     set_form(new_create_form());
@@ -49,7 +66,16 @@ export default function Job() {
     set_form(new_form);
   };
   const [items, set_items] = useState([]);
-
+  const delete_item = function (item_id) {
+    let new_items = items.slice();
+    for (let i = 0; i < new_items.length; i++) {
+      if (new_items[i][attribute_name_item_id] == item_id) {
+        new_items.splice(i, 1);
+        break;
+      }
+    }
+    set_items(new_items);
+  };
   const set_item = function (obj) {
     let new_items = items.slice();
     for (let i = 0; i < new_items.length; i++) {
@@ -72,11 +98,22 @@ export default function Job() {
     });
   }, []);
 
+  const get_del_func = function (obj) {
+    return function () {
+      delete_item_func(obj).then((out) => {
+        if (action_state >= 2) {
+          set_item(out);
+        } else {
+          delete_item(obj[attribute_name_item_id]);
+        }
+      });
+    };
+  };
   const get_edit_func = function (obj) {
     return function () {
       get_item_func(obj).then((out) => {
         set_form({
-          new_item: objects.NewUpdateJob(out),
+          new_item: objects.NewUpdatePayout(out),
           is_create: false,
         });
       });
@@ -116,12 +153,46 @@ export default function Job() {
               {form.is_create ? create_title_text : update_title_text}
             </span>
           </div>
+          <p style={{ marginBottom: 6 }}>Сотрудник</p>
+          <select
+            style={{
+              fontFamily: "system-ui",
+              fontSize: 16,
+              borderRadius: 10,
+              //   outline: "none",
+              width: "376px",
+              height: 30,
+              backgroundColor: "transparent",
+              marginBottom: 12,
+            }}
+            name="staff_id"
+            placeholder="Staff"
+            value={form.new_item.staff_id}
+            onChange={(e) => set_form_attribute("staff_id", e.target.value)}
+          >
+            {staffs
+              ? staffs.map((db) => (
+                  <option
+                    key={db.staff_id}
+                    value={db.staff_id}
+                    label={db.staff_name + " " + db.staff_sur}
+                  ></option>
+                ))
+              : "Загрузка..."}
+          </select>
           <TableInput
-            type="text"
+            type="number"
             item={form.new_item}
             set_form_attribute_func={set_form_attribute}
-            name="job_name"
-            label={"Название"}
+            name="payout_amount"
+            label={"Сумма выплаты"}
+          />
+          <TableInput
+            type="datetime-local"
+            item={form.new_item}
+            set_form_attribute_func={set_form_attribute}
+            name="payout_date"
+            label={"Дата выплаты"}
           />
           <button
             style={{
@@ -186,23 +257,30 @@ export default function Job() {
                     .slice()
                     .reverse()
                     .map((item) => (
-                      <tr
-                        key={item[attribute_name_item_id]}
-                        style={(() => {
-                          if (item.staff_hidden) {
-                            return { color: "rgba(0,0,0,0.4)" };
-                          }
-                          return {};
-                        })()}
-                      >
-                        <td>{item.job_name}</td>
+                      <tr key={item[attribute_name_item_id]}>
+                        <td>
+                          {item.staff.staff_sur +
+                            " " +
+                            item.staff.staff_name +
+                            " " +
+                            item.staff.staff_mid_name}
+                        </td>
+                        <td>{item.payout_amount}</td>
+                        <td>
+                          {new Date(
+                            item.payout_date.getTime() -
+                              new Date().getTimezoneOffset() * 60 * 1000
+                          ).toLocaleString("ru-RU")}
+                        </td>
                         <td>
                           <ActionButtons
+                            delFunc={get_del_func({
+                              payout_id: item[attribute_name_item_id], ////
+                            })}
                             editFunc={get_edit_func({
-                              staff_id: item[attribute_name_item_id], ////
+                              payout_id: item[attribute_name_item_id], ////
                             })}
                             state={action_state}
-                            hidden={item.staff_hidden}
                           ></ActionButtons>
                         </td>
                       </tr>

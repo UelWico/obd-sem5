@@ -8,7 +8,6 @@ from schemas.supplier import SupplierDB
 
 
 class CreateDelivery(BaseModel):
-    staff_id: int
     supplier_id: int
     delivery_type_id: int
     delivery_date: datetime
@@ -16,9 +15,6 @@ class CreateDelivery(BaseModel):
 
 class DeliveryDB(BaseModel):
     delivery_id: int
-    # staff_id: int
-    # supplier_id: int
-    # delivery_type_id: int
     delivery_date: datetime
     staff: StaffDB
     supplier: SupplierDB
@@ -31,7 +27,6 @@ class GetDelivery(BaseModel):
 
 class UpdateDelivery(BaseModel):
     delivery_id: int
-    staff_id: int
     supplier_id: int
     delivery_type_id: int
     delivery_date: datetime

@@ -7,7 +7,6 @@ from schemas.staff import StaffDB
 
 
 class CreateConcert(BaseModel):
-    staff_id: int
     concert_date: datetime
     concert_name: str
     concert_band: str
@@ -27,7 +26,6 @@ class ConcertDB(BaseModel):
 
 class UpdateConcert(BaseModel):
     concert_id: int
-    staff_id: int
     concert_date: datetime
     concert_name: str
     concert_band: str
